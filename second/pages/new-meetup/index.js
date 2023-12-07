@@ -15,8 +15,9 @@ function NewMeetupPage() {
         },
       });
 
-      if (response.ok) router.push('/');
-      else alert('Something went wrong!');
+      if (response.ok) {
+        router.push('/');
+      } else alert('Something went wrong!');
     } catch (error) {
       console.log(error);
     }
