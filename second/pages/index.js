@@ -1,8 +1,20 @@
+import Head from 'next/head';
 import MeetupList from '../components/meetups/MeetupList';
 import { MongoClient } from 'mongodb';
 
 function HomePage(props) {
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <>
+      <Head>
+        <title>Meetups Home Page</title>
+        <meta
+          name='description'
+          content='One of the best online meetup website'
+        />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </>
+  );
 }
 
 // export async function getServerSideProps(context) {
