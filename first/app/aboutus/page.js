@@ -1,6 +1,7 @@
 import React from 'react';
 import { details } from '@/app/constants/users';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const About = () => {
   return (
