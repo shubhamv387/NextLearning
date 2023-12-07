@@ -1,5 +1,5 @@
-import { DUMMY_MEETUPS } from '@/constants/dummyMeetups';
 import MeetupList from '../components/meetups/MeetupList';
+import { MongoClient } from 'mongodb';
 
 function HomePage(props) {
   return <MeetupList meetups={props.meetups} />;
@@ -17,11 +17,22 @@ function HomePage(props) {
 // }
 
 export async function getStaticProps() {
+  const client = await MongoClient.connect(process.env.MONGO_URL);
+  const db = client.db();
+  const meetupsCollection = db.collection('meetups');
+  const meetups = await meetupsCollection.find().toArray();
+  client.close();
+
   return {
     props: {
-      meetups: DUMMY_MEETUPS,
+      meetups: meetups.map((meetup) => ({
+        id: meetup._id.toString(),
+        title: meetup.title,
+        image: meetup.image,
+        address: meetup.address,
+      })),
     },
-    revalidate: 10,
+    revalidate: 1,
   };
 }
 
