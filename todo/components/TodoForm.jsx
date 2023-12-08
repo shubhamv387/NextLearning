@@ -2,17 +2,20 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
-const TodoForm = () => {
+const TodoForm = (props) => {
   const router = useRouter();
   const { edit, todoId } = router.query;
+
   const [todoInput, setTodoInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const todoInputRef = useRef();
   // console.log(edit, todoId);
 
+  console.log(props.todo);
+
   useEffect(() => {
     if (edit) {
-      setTodoInput('google is my best friend!');
+      setTodoInput(props.todo.todo);
     }
     todoInputRef.current.focus();
   }, []);
@@ -22,12 +25,23 @@ const TodoForm = () => {
 
     const enteredTodo = todoInput.trim();
     if (enteredTodo.length < 1) alert('todo required!');
+
     if (edit) {
-      console.log('editing todo');
+      try {
+        setIsLoading(true);
+        await axios.post(`/api/update-todo/${props.todo.id}`, {
+          todo: enteredTodo,
+        });
+        router.push('/');
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       try {
         setIsLoading(true);
-        const { data } = await axios.post('/api/new-todo', {
+        await axios.post('/api/new-todo', {
           todo: enteredTodo,
         });
         router.push('/');

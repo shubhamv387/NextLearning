@@ -1,54 +1,68 @@
-// import { MongoClient } from 'mongodb';
-
+import axios from 'axios';
 import Link from 'next/link';
 import { HiOutlineTrash, HiPencilAlt } from 'react-icons/hi';
 import { GoCheckCircleFill, GoCheckCircle } from 'react-icons/go';
+import { useRouter } from 'next/router';
 
 const TodoList = (props) => {
-  // const removeTodo = async (id) => {
-  //   try {
-  //     const client = await MongoClient.connect(process.env.MONGO_URL);
-  //     const db = client.db('todos');
-  //     const todoCollections = db.collection('todos');
+  const router = useRouter();
+  const removeTodo = async (id) => {
+    try {
+      await axios.delete(`/api/delete-todo/${id}`);
+      alert('Todo deleted successfully!');
+      router.push(router.pathname);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  //     await todoCollections.findOneAndDelete({ _id: id });
-  //     client.close();
-  //     alert('Todo deleted successfully!');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const markComplete = (id) => {
-    console.log(id);
+  const markComplete = async (id) => {
+    try {
+      await axios.put(`/api/update-todo/${id}`, { completed: true });
+      alert('Todo completed successfully!');
+      router.push('/');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <>
-      {props.todos.map((todo) => (
-        <div
-          key={todo.id}
-          className='w-full p-4 border border-slate-300 my-3 flex justify-between gap-5 items-center'
-        >
-          <div className='flex items-center justify-center gap-2'>
-            <button onClick={markComplete}>
-              <GoCheckCircle className='text-white' size={24} />
-            </button>
-            <h2 className='font-bold text-2xl'>{todo.todo}</h2>
-          </div>
-          <div className='flex gap-2'>
-            <button
-            // onClick={removeTodo}
-            >
-              <HiOutlineTrash className='text-red-400' size={24} />
-            </button>
-            <Link href={`/edit-todo/${todo.id}`}>
-              <HiPencilAlt size={24} />
-            </Link>
-          </div>
-        </div>
-      ))}
-    </>
+    <ul className='flex w-full flex-col items-center justify-center gap-3'>
+      {props.todos.length > 0 ? (
+        props.todos.map((todo) => (
+          <li
+            key={todo.id}
+            className='w-full p-4 border border-slate-300 flex justify-between gap-5 items-center'
+          >
+            <div className='flex items-center justify-center gap-2'>
+              {router.pathname !== '/completed' ? (
+                <button onClick={() => markComplete(todo.id)}>
+                  <GoCheckCircle
+                    className='text-white hover:text-green-600 transition'
+                    size={24}
+                  />
+                </button>
+              ) : (
+                <GoCheckCircleFill className='text-green-600' size={24} />
+              )}
+              <h2 className='font-semibold text-lg'>{todo.todo}</h2>
+            </div>
+            <div className='flex gap-2'>
+              <button onClick={() => removeTodo(todo.id)}>
+                <HiOutlineTrash className='text-red-400' size={24} />
+              </button>
+              {router.pathname !== '/completed' && (
+                <Link href={`/${todo.id}?edit=true`}>
+                  <HiPencilAlt size={24} />
+                </Link>
+              )}
+            </div>
+          </li>
+        ))
+      ) : (
+        <h1 className='text-3xl font-bold text-cyan-300'>No todos found!</h1>
+      )}
+    </ul>
   );
 };
 
