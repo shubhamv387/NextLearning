@@ -6,6 +6,7 @@ const TodoForm = () => {
   const router = useRouter();
   const { edit, todoId } = router.query;
   const [todoInput, setTodoInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const todoInputRef = useRef();
   // console.log(edit, todoId);
 
@@ -25,13 +26,15 @@ const TodoForm = () => {
       console.log('editing todo');
     } else {
       try {
+        setIsLoading(true);
         const { data } = await axios.post('/api/new-todo', {
           todo: enteredTodo,
         });
-        setTodoInput('');
-        alert(data.message);
+        router.push('/');
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -52,12 +55,19 @@ const TodoForm = () => {
         </div>
 
         <button
+          disabled={isLoading}
           onClick={submitFormHandler}
           type='submit'
-          className='group mt-4 w-full rounded-md bg-blue-700 px-5 py-2 ring-1 ring-blue-700 text-white transition hover:bg-blue-600 focus:outline-none sm:mt-0 sm:w-auto'
+          className='group mt-4 w-full rounded-md bg-blue-700 px-5 py-2 ring-1 ring-blue-700 text-white transition hover:bg-blue-600 focus:outline-none sm:mt-0 sm:w-auto disabled:bg-blue-400'
         >
           <span className='text-sm font-medium'>
-            {!edit ? 'Add Todo' : 'Update Todo'}
+            {!edit
+              ? isLoading
+                ? 'Adding todo...'
+                : 'Add Todo'
+              : isLoading
+              ? 'Updating todo...'
+              : 'Update Todo'}
           </span>
         </button>
       </form>
