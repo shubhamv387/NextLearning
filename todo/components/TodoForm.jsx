@@ -11,11 +11,9 @@ const TodoForm = (props) => {
   const todoInputRef = useRef();
   // console.log(edit, todoId);
 
-  console.log(props.todo);
-
   useEffect(() => {
     if (edit) {
-      setTodoInput(props.todo.todo);
+      setTodoInput(props.todo?.todo);
     }
     todoInputRef.current.focus();
   }, []);
