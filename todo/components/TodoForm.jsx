@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 const TodoForm = (props) => {
   const router = useRouter();
@@ -22,7 +23,7 @@ const TodoForm = (props) => {
     e.preventDefault();
 
     const enteredTodo = todoInput.trim();
-    if (enteredTodo.length < 1) alert('todo required!');
+    if (enteredTodo.length < 1) return toast.error('todo input required!');
 
     if (edit) {
       try {
@@ -30,6 +31,7 @@ const TodoForm = (props) => {
         await axios.post(`/api/update-todo/${props.todo.id}`, {
           todo: enteredTodo,
         });
+        toast.success('todo updated successfully!');
         router.push('/');
       } catch (error) {
         console.log(error);
@@ -42,6 +44,7 @@ const TodoForm = (props) => {
         await axios.post('/api/new-todo', {
           todo: enteredTodo,
         });
+        toast.success('todo added successfully!');
         router.push('/');
       } catch (error) {
         console.log(error);

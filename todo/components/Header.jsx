@@ -1,9 +1,11 @@
 import Link from 'next/link';
+import NavBar from './NavBar';
 
 const Header = () => {
   return (
-    <header className='w-full flex items-center justify-center p-4 bg-slate-500'>
-      <nav className='flex container max-w-7xl items-center justify-between'>
+    <header className='w-full flex items-center justify-center bg-slate-500'>
+      <NavBar />
+      {/* <nav className='flex container max-w-7xl items-center justify-between'>
         <h1 className='text-2xl font-bold uppercase'>Todo App.</h1>
         <ul className='flex gap-8 font-semibold text-xl'>
           <li>
@@ -30,7 +32,7 @@ const Header = () => {
             </Link>
           </li>
         </ul>
-      </nav>
+      </nav> */}
     </header>
   );
 };

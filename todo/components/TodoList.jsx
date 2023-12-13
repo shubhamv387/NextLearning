@@ -3,13 +3,14 @@ import Link from 'next/link';
 import { HiOutlineTrash, HiPencilAlt } from 'react-icons/hi';
 import { GoCheckCircleFill, GoCheckCircle } from 'react-icons/go';
 import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
 
 const TodoList = (props) => {
   const router = useRouter();
   const removeTodo = async (id) => {
     try {
       await axios.delete(`/api/delete-todo/${id}`);
-      alert('Todo deleted successfully!');
+      toast.success('Todo deleted successfully!');
       router.push(router.pathname);
     } catch (error) {
       console.log(error);
@@ -19,7 +20,7 @@ const TodoList = (props) => {
   const markComplete = async (id) => {
     try {
       await axios.put(`/api/update-todo/${id}`, { completed: true });
-      alert('Todo completed successfully!');
+      toast.success('Todo completed successfully!');
       router.push('/');
     } catch (error) {
       console.log(error);
